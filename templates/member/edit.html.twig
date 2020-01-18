@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Trick{% endblock %}
+
+{% block body %}
+	{% block cover %}{% endblock %}
+	<div class="container form-container">
+    <div class="m-4 row edit-Page-row">
+        <div class="col">
+          <a class="btn btn-primary btn-sm" href="{{ path('trick_index') }}">Accueil</a>
+        </div>
+        <div class="col-sm-8">
+          <h1 class="title-col text-center" >Editer une figure</h1>
+        </div>
+
+        <div class="col">
+          {{ include('member/_delete_form.html.twig') }}
+       </div>
+    </div>
+	 
+
+	   {{ include('trick/_form.html.twig') }}
+
+     
+
+  </div> 
+	   
+
+{% endblock %}

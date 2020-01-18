@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-5">
+  <div class="row">
+  {% block cover %}{% endblock %}
+    {% if error %}
+      <div class="alert alert-danger mx-auto">
+          <ul class="list-unstyled mb-0">
+            <li><span class="initialism form-error-icon badge badge-danger">Erreur</span> 
+                <span class="form-error-message">{{ error.messageKey|trans(error.messageData, 'security') }}</span>
+            </li>
+          </ul>
+        </div>
+    {% endif %}
+  </div>
+
+<!-- Login form -->
+  <div class="row">
+    <div class="container">
+      <div class="row">
+
+        <div class="card p-4 mx-auto">
+            <div class="card-block">
+            {{form_start(form)}}
+                <!--Header-->
+                <div class="text-center">
+                    <h3><i class="fa fa-lock"></i> Espace membre:</h3>
+                    <hr class="mt-2 mb-2">
+                </div>
+
+                <!--Body-->
+                <div class="md-form">
+                    <i class="fa fa-envelope prefix"></i>
+                    {{ form_widget(form._username, {'attr': {'class': 'form-control mb-4'}}) }}
+                    {{ form_label(form._username, 'Email') }}
+                    {{ form_errors(form._username) }}
+                </div>
+
+                <div class="md-form">
+                    <i class="fa fa-lock prefix"></i>
+                    {{ form_widget(form._password, {'attr': {'class': 'form-control mb-4'}}) }}
+                    {{ form_label(form._password, 'Password') }}
+                    {{ form_errors(form._password) }}
+                </div>
+
+                <div class="text-center">
+                    <button class="btn btn-deep-purple">Connexion</button>
+                </div>
+
+            </div>
+            {{form_end(form)}}
+            <!--Footer-->
+            <div class="modal-footer">
+                <div class="options">
+                    <p>Nouveau membre ? <a href="{{path('user_registration')}}">Créer un compte</a></p>
+                    <p>Mot de passe oublié ? <a href="{{path('forgotten_password')}}">Récuperer</a></p>
+                </div>
+            </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <!-- Login form -->
+</div>
+
+{% endblock %}

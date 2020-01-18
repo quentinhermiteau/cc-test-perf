@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trick{% endblock %}
+
+{% block body %} 
+{% block cover %}{% endblock %}
+<!-- Jumbotron -->
+<div class="card card-image" style="background-image: url('{{ asset('uploads/images/' ~ trick.getFirstImg)}}'), url('{{ asset('img/non-disponible.jpg')}}');background-repeat: no-repeat; background-size: cover; background-position: center;">
+  <div class="text-white text-center rgba-stylish-strong py-5 px-4">
+    <div class="edit-delete-btn">
+      <a href="{{ path('trick_edit', {'id': trick.id})}}" class="btn btn-warning btn-sm">edit</a>
+      {{ include('member/_delete_form.html.twig') }}
+    </div>
+    <div class="py-5">
+
+      <!-- Content -->
+      <h2 class="h2 orange-text"><i class="fas fa-snowboarding"></i></h2>
+      <h1 class="card-title h2 my-4 py-2">{{ trick.name }}</h1>
+
+    </div>
+  </div>
+</div>
+<!-- Jumbotron -->
+
+<div class="docs-container row text-center"> 
+
+ {% for file in trick.getImgDocs() %}
+ <div class="col-sm-6 col-md-4 col-lg-3 m-0 p-3">
+    <a><img src="{{ asset('uploads/images/' ~ file)}}" class="thumbnails-docs" data-toggle="modal" data-target="#modal{{(file|split('.')|first)}}"></a>
+
+
+  <!--Modal: modalYT-->
+  <div class="modal fade" id="modal{{(file|split('.')|first)}}" tabindex="-1" role="dialog" aria-labelledby="{{(file|split('.')|first)}}" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+
+      <!--Content-->
+      <div class="modal-content">
+
+        <!--Body-->
+        <div class="modal-body mb-0 p-0">
+
+          <div class="embed-responsive embed-responsive-16by9 z-depth-1-half">
+              <img src="{{ asset('uploads/images/' ~ file)}}" class="embed-responsive-item">
+          </div>
+        </div>
+
+      </div>
+      <!--/.Content-->
+
+    </div>
+  </div>
+  <!--Modal: modalYT-->
+ </div>
+  {% endfor %}
+
+  {% for file in trick.getVideoDocs() %}
+ <div class="col-sm-6 col-md-4 col-lg-3 m-0 p-3">
+    <a><img src="{{ asset('img/video-icon.jpg')}}" class="thumbnails-docs" data-toggle="modal" data-target="#modal{{(file|split('.')|first)}}"></a>
+
+
+  <!--Modal: modalYT-->
+  <div class="modal fade" id="modal{{(file|split('.')|first)}}" tabindex="-1" role="dialog" aria-labelledby="{{(file|split('.')|first)}}" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+
+      <!--Content-->
+      <div class="modal-content">
+
+        <!--Body-->
+        <div class="modal-body mb-0 p-0">
+
+          <div class="embed-responsive embed-responsive-16by9 z-depth-1-half">
+
+            <video  class="embed-responsive-item" controls>
+              <source src="{{ asset('uploads/images/' ~ file)}}" type="video/mp4" allowfullscreen>
+            </video>
+
+          </div>
+        </div>
+
+      </div>
+      <!--/.Content-->
+
+    </div>
+  </div>
+  <!--Modal: modalYT-->
+ </div>
+  {% endfor %}
+
+</div>
+
+
+<!-- Card -->
+<div class="card card-cascade wider reverse">
+
+  <!-- Card content -->
+  <div class="card-body card-body-cascade text-center">
+
+    <!-- Title -->
+    <h4 class="card-title"><strong>Description</strong></h4>
+    <!-- Text -->
+    <p class="card-text">{{trick.description}}</p>
+    <hr>
+    <div class="trick-info-collapse">
+      <p>
+      <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#multiCollapseExample1" aria-expanded="false" aria-controls="multiCollapseExample2">Niveau</button>
+      <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Catégorie</button>
+      <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#multiCollapseExample3" aria-expanded="false" aria-controls="multiCollapseExample2">Date d'ajout</button>
+    </p>
+    <div class="row">
+      <div class="col">
+        <div class="collapse multi-collapse" id="multiCollapseExample1">
+          <div class="card card-body alert alert-dark">
+            {{niveau}}
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="collapse multi-collapse" id="multiCollapseExample2">
+          <div class="card card-body alert alert-dark">
+            {{trick_group}}
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="collapse multi-collapse" id="multiCollapseExample3">
+          <div class="card card-body alert alert-dark">
+            {{trick.datecreation|date('d/m/Y')}}
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+</div>
+<!-- Card -->
+
+<!-- Comments input-->
+
+{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+<div class="comments-container">
+  <div>
+    {{form_start(form)}}
+
+      <div class="comment-input text-center">
+       {{form_widget(form.content, { 'attr': {'class': 'form-control'} })}}
+
+       <button class="btn btn-indigo" id="jq-insert">Envoyer</button> 
+      </div>
+    {{form_end(form)}}
+  </div>
+
+  {% endif %}
+<!-- Comments input-->
+
+
+<!-- Comments Display-->
+  <div id="comments_block" class="text-center">
+
+    
+  </div>
+<!-- Comments Display-->
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+  <script type="text/javascript">
+    
+    $(document).ready(function(){
+      $.post( "{{path('new_comments', {id:trick.id})}}")
+        .done(function(comments){
+          $('#comments_block').empty().append(comments);
+
+          $('#jq-plus').on('click', function(){
+        var number_com = $('#jq-com > div').length;
+      $.post( "{{path('new_comments',{id:trick.id})}}", {first: number_com})
+        .done(function(comms){
+          $(comms).insertBefore("#jq-plus");
+          if (!$(comms).hasClass("more")) {
+              $("#jq-plus").hide();
+          }
+          // SI LE RESULTAT DE LA REQUETE EST VIDE OU QU IL Y A MOINS DE 3 TRICKS CACHER LE BUTTON
+
+        })
+        
+
+    });
+        }) 
+
+      });
+
+  </script>
+
+{% endblock %}

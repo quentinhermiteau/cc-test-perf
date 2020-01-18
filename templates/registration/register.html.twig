@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+	{% block cover %}{% endblock %}
+	<div class="container mt-5">
+		<div class="row">
+      <div class="card p-4 mx-auto">
+        <div class="card-block">
+        		{{form_start(form)}}
+            {{ form_errors(form) }}
+
+              <!-- Heading -->
+                <div class="form-header p-3 indigo" style="color: white">
+                  <h3><i class="fa fa-user"></i> Créer un compte</h3>	
+               </div>
+               <!-- Body -->
+
+                <div class="md-form">
+                  <i class="fa fa-user prefix"></i>
+                   {{ form_widget(form.nickName, {'attr': {'class': 'form-control mb-4'}}) }}
+                   {{ form_label(form.nickName, "Nom d'utilisateur") }}
+                  
+                </div>
+
+              	<div class="md-form">
+                  <i class="fa fa-envelope prefix"></i>
+              		 {{ form_widget(form.email, {'attr': {'class': 'form-control mb-4'}}) }}
+              		 {{ form_label(form.email, 'Email') }}
+              		
+              	</div>	
+               
+              	<div class="md-form">
+                  <i class="fa fa-lock prefix"></i>
+              		 {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control mb-4'}}) }}
+              		 {{ form_label(form.plainPassword.first, 'Mot de passe') }}
+                  
+              		
+              	</div>	
+             
+              
+              	<div class="md-form">
+                  <i class="fa fa-lock prefix"></i>
+              		{{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control mb-4'}}) }}
+              		 {{ form_label(form.plainPassword.second, 'Confirmer mot de passe') }}
+                   
+              		 
+              	</div>
+              	
+              <div class="text-center">
+              	
+                <button class="btn btn-indigo">Envoyer</button>
+              	
+              </div>
+        		{{form_end(form)}}
+         </div>
+      </div>
+		</div>
+	</div>
+{% endblock%}
+

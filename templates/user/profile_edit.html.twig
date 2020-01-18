@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editer profil{% endblock %}
+
+{% block body %}
+  {% block cover %}{% endblock %}
+  <div class="container form-container">
+    <div class="m-4 row edit-Page-row">
+        <div class="col-sm-8">
+          <h1 class="title-col text-center" >Editer votre profil</h1>
+        </div>
+
+    </div>
+   
+
+
+{{ form_start(form) }}
+  
+     <div class="container"> 
+
+        <div class="row">
+          <div class="col-md-6">{{form_row(form.nickName)}}</div>
+          <div class="col-md-6">{{form_row(form.email)}}</div>
+        </div>
+          <div>{{form_row(form.photo)}}</div>  
+
+      </div>
+
+   
+     
+    <button class="btn btn-light-green btn-sm">{{ button_label|default('Valider') }}</button>
+{{ form_end(form) }}
+
+
+
+     
+
+  </div> 
+     
+
+{% endblock %}

@@ -1,0 +1,58 @@
+
+{{ form_start(form) }}
+  
+     <div class="container">
+        
+        <div >{{form_row(form.name)}}</div>
+        
+        <div>{{form_row(form.description)}}</div>   
+
+        <div class="row">
+          <div class="col-md-6">{{form_row(form.niveau)}}</div>
+          <div class="col-md-6">{{form_row(form.trick_group)}}</div>
+        </div>
+        <div class="row">
+          
+          <div class="col-md-6">
+            <ul id="img-fields-list"
+            data-prototype="{{ form_widget(form.imgDocs.vars.prototype)|e }}"
+            data-widget-tags="{{ '<li></li>'|e }}"
+            data-widget-counter="{{ form.children|length }}">
+          {% for doc in form.imgDocs %}
+              <li>
+                  {{ form_widget(doc) }}
+                  {{ form_errors(doc) }}
+              </li>
+          {% endfor %}
+          </ul>
+
+          <button type="button"
+            class="add-another-collection-img btn btn-info"
+            data-list-selector="#img-fields-list">Ajouter une image </button>
+          </div>
+          
+          <div class="col-md-6">
+            <ul id="doc-fields-list"
+            data-prototype="{{ form_widget(form.videoDocs.vars.prototype)|e }}"
+            data-widget-tags="{{ '<li></li>'|e }}"
+            data-widget-counter="{{ form.children|length }}">
+          {% for doc in form.videoDocs %}
+              <li>
+                  {{ form_widget(doc) }}
+                  {{ form_errors(doc) }}
+              </li>
+          {% endfor %}
+          </ul>
+
+          <button type="button"
+            class="add-another-collection-video btn btn-info"
+            data-list-selector="#doc-fields-list">Ajouter une vidéo </button>
+          </div>
+        </div>
+      </div>
+
+   
+     
+    <button class="btn btn-light-green btn-sm">{{ button_label|default('Valider') }}</button>
+{{ form_end(form) }}
+

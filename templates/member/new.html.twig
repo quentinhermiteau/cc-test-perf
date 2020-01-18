@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Trick{% endblock %}
+
+{% block body %}
+	{% block cover %}{% endblock %}
+	<div class="container">
+    <div class="m-4 row edit-Page-row">
+      <div class="col">
+        <a href="{{ path('trick_index') }}" class="btn btn-primary btn-sm">Accueil</a>
+      </div>
+      <div class="col-sm-10">
+        <h1>Ajouter une nouvelle figure</h1>
+      </div>
+    </div>
+	    
+
+	    {{ include('trick/_form.html.twig') }}
+
+	    
+	</div>
+{% endblock %}

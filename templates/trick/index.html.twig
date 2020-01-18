@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trick index{% endblock %}
+
+{% block body %}
+
+<section>
+
+  <div class="container">
+    <div>
+      <div class="d-flex row justify-content-start mx-auto" id="jq-card">    
+      </div>
+
+      <div class="mx-auto text-center">
+        <img src="{{ asset('img/loading_spinner.gif')}}" id="spin-img">
+      </div>
+
+    </div>
+     
+    <button class="btn btn-default" id ="js-scroll-down"><i class="fas fa-arrow-down ml-1"></i></button>
+  </div>
+</div>
+
+  
+</section>
+
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+
+  $(document).ready(function(){
+    
+    $('#spin-img').hide()
+    var tricks_count;
+
+    // initial request to get the tricks'number from db
+    $.post( "{{path('trick_ajax')}}")
+      .done(function(count){  tricks_count = parseInt(count);})
+
+    if (tricks_count == 0) {$('#js-scroll-down').hide();}
+
+    $('#js-scroll-down').on('click', function(e){
+
+      $('#spin-img').show()
+      var appended_tricks = $('#jq-card > div >.card').length;
+     
+      $.post( "{{path('trick_ajax')}}", {first: appended_tricks})
+        .done(function(tricks){
+          $('#spin-img').hide()
+          $('#jq-card').append(tricks);
+          var total_tricks = $('#jq-card > div >.card').length;
+          // if there is no more tricks in the db hide button
+          if (total_tricks == tricks_count) {
+            $('#js-scroll-down').hide();
+          }   
+        })
+      // scroll page down whenever the loading button is clicked
+      var n = $(document).height();
+      $('html, body').animate({ scrollTop:  $('body').offset().top + n }, 'slow');
+    });
+  });
+  </script>
+{% endblock %}
