@@ -40,16 +40,35 @@ CSS & JS
 1. Clone this repository on your local machine : 
 
 ```
-git clone https://github.com/moezovic/snow-tricks.git
+git clone https://gitlab.com/Lewisroy/cc-tests-de-perf.git
 ```
 
 2. install [composer](https://getcomposer.org/doc/00-intro.md)
 
-3. Change the files .env : Edit database parameter with yours 
+3. composer install
 
-4. Install the database
+4. Change the files .env : Edit database parameter with yours 
+
+5. Install the database
+
+```
+php bin/console doctrine:database:create
+```
+
+5. Create database schema
+
+```
+php bin/console doctrine:migration:migrate
+```
+
 5. Load the fixtures using this command:
 
 ```
 php bin/console doctrine:fixtures:load
 ```
+
+Problèmes rencontrés avec le groupe 2 :
+
+Certaines personnes avaient les migrations qui ne marchaient pas, elles les ont supprimées et relancer.
+
+Le composer install n'a pas marché pour certains, ils ont fait composer update juste après
