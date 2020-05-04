@@ -1,5 +1,5 @@
-FROM php:alpine
+FROM php:latest
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql \
-    && addgroup -g 1000 -S php \
-    && adduser -h /home/php -g "" -s /bin/sh -G php -S -D -u 1000 php
+    && groupadd -g 1000 php \
+    && useradd -g 1000 -u 1000 -m -r -s /bin/sh php
