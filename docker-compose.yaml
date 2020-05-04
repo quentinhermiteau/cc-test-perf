@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+    # docker-compose run --rm composer install
+    composer:
+        container_name: composer
+        build: docker/composer
+        tty: true
+        user: composer
+        entrypoint: composer
+        working_dir: /home/composer
+        volumes:
+            - .:/home/composer
+
+    # docker-compose run --rm php bin/console list
+    # docker-compose run --rm --service-ports php bin/console server:run
+    php:
+        container_name: php
+        build: docker/php
+        tty: true
+        user: php
+        entrypoint: php
+        working_dir: /home/php
+        ports:
+            - 127.0.0.1:8000:8000
+        volumes:
+            - .:/home/php
+
+    # docker-compose up mariadb
+    mariadb:
+        restart: always
+        container_name: mariadb
+        image: mariadb:latest
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: database
+        volumes:
+            - ./mariadb:/var/lib/mysql
