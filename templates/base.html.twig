@@ -5,14 +5,15 @@
 		  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		  <meta http-equiv="x-ua-compatible" content="ie=edge">
 		  <title>Welcome to snow tricks</title>
+		  <link rel="preconnect" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
 		  <!-- Font Awesome -->
-		  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+		  <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">-->
 		  <!-- Bootstrap core CSS -->
-		  <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
+		  <!--<link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">-->
 		  <!-- Material Design Bootstrap -->
-		  <link href="{{asset('css/mdb.min.css')}}" rel="stylesheet">
+		  <!--<link href="{{asset('css/mdb.min.css')}}" rel="stylesheet">-->
 		  <!-- Your custom styles (optional) -->
-		  <link href="{{asset('css/style.min.css')}}" rel="stylesheet">
+		  <!--<link href="{{asset('css/style.min.css')}}" rel="stylesheet">-->
       <link href="{{asset('css/mainstyle.css')}}" rel="stylesheet">
 		  {% block stylesheets %}{% endblock %}
 
@@ -74,7 +75,7 @@
 
 		  <!-- Full Page Intro -->
 {% block cover%}
-  <div class="view full-page-intro" style="background-image: url({{ asset('img/tricks-HPage.jpg') }}) ; background-repeat: no-repeat; background-size: cover; background-position: center; ">
+  <div class="view full-page-intro" style="background-image: url({{ asset('img/tricks-HPage.webp') }}) ; background-repeat: no-repeat; background-size: cover; background-position: center; ">
 
     <!-- Mask & flexbox options-->
     <div class="mask rgba-black-light d-flex justify-content-center align-items-center">
@@ -155,6 +156,40 @@
         </script>
         <script type="text/javascript" src="{{asset('js/mainJs.js')}}"></script>
         <script type="text/javascript" src="{{asset('js/new_collection_widget.js')}}"></script>
+        <script>
+            "use strict";
+
+            /**
+             * @description Create a HTML element based off a given URL.
+             * @param {string} href The url of the sytlesheet to create.
+             * @return {HTMLLinkElement} The HTML element create from the url.
+             * @example createStylesheet("/path/to/my/app.css");
+             */
+            function createStylesheet(href) {
+                // If the first argument is not a string
+                if (typeof href !== "string") {
+                    // This means it is a developer mistake, it should be accounted
+                    throw new TypeError("Expected first argument to be a string.");
+                }
+
+                // Creation of the link tag, but in JavaScript
+                const stylesheet = document.createElement("link");
+
+                // Tell the browser to load the URL as a stylesheet
+                stylesheet.setAttribute("rel", "stylesheet");
+
+                // Tell the browser to load the stylesheet from this URL
+                stylesheet.setAttribute("href", href);
+
+                // Return the HTML Link Tag
+                return stylesheet;
+            }
+
+            document.head.appendChild(createStylesheet("https://use.fontawesome.com/releases/v5.7.0/css/all.css"));
+            document.head.appendChild(createStylesheet("{{asset('css/bootstrap.min.css')}}"));
+            document.head.appendChild(createStylesheet("{{asset('css/mdb.min.css')}}"));
+            document.head.appendChild(createStylesheet("{{asset('css/style.min.css')}}"));
+        </script>
         {% block javascripts %}{% endblock %}
     </body>
 </html>
