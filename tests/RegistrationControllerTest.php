@@ -76,7 +76,7 @@ class RegistrationControllerTest extends WebTestCase
         $crawler = $client->submit($form);
 
         $this->assertTrue(
-          $client->getResponse()->isRedirect('/login')
+            $client->getResponse()->isRedirect('/login')
         );
     }
 
@@ -100,8 +100,8 @@ class RegistrationControllerTest extends WebTestCase
         $crawler = $client->submit($form);
 
         $this->assertEquals(
-          1,
-          $crawler->filter('body:contains("Cet Email est deja utilisé")')->count()
+            1,
+            $crawler->filter('body:contains("Cet Email est deja utilisé")')->count()
         );
     }
 }

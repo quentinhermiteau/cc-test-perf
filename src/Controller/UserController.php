@@ -69,6 +69,6 @@ class UserController extends AbstractController
           'user' => $user,
           'form' => $form->createView(),
     
-      ]);
+        ]);
     }
 }

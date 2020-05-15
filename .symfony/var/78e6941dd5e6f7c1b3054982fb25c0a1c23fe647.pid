@@ -1,0 +1,8 @@
+{
+    "dir": "/home/php",
+    "command": "",
+    "watch": null,
+    "pid": 7,
+    "port": 8000,
+    "scheme": "http"
+}

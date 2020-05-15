@@ -8,20 +8,14 @@ use App\Repository\TrickRepository;
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Repository\CommentsRepository;
-use App\Entity\User;
-use App\Repository\UserRepository;
 
 use App\Service\UploadedFileManager;
 use App\Service\TemporaryFileManager;
-
-
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * handle all requests related to trick diplay and management
@@ -30,23 +24,21 @@ class TrickController extends AbstractController
 {
     private $uploadedFile;
 
-    public function __construct(UploadedFileManager $uploadedFile)
+    public function __construct(UploadedFileManager $uploadedFile, EntityManagerInterface $entityManager)
     {
         $this->uploadedFile = $uploadedFile;
+        $this->entityManager = $entityManager;
     }
+
     /**
      * Action : get home page
      * @Route("/", name="trick_index", methods={"GET"})
      */
     public function index(TrickRepository $trickRepository): Response
     {
-        $tricks = $trickRepository->findAll();
-
-
         return $this->render('trick/index.html.twig', [
-          'tricks' => $tricks,
+            'tricks' => $trickRepository->findAll(),
             'fixed_menu'=> 'enabled'
-
         ]);
     }
 
@@ -60,15 +52,12 @@ class TrickController extends AbstractController
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setVideoDocs($this->uploadedFile->docsInputManager($form->get('videoDocs')->getData()));
             $trick->setImgDocs($this->uploadedFile->docsInputManager($form->get('imgDocs')->getData()));
 
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($trick);
-            $entityManager->flush();
+            $this->entityManager->persist($trick);
+            $this->entityManager->flush();
 
             return $this->redirectToRoute('trick_index');
         }
@@ -78,7 +67,6 @@ class TrickController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 
     /**
      * Action : display a trick details page
@@ -90,8 +78,9 @@ class TrickController extends AbstractController
             return $this->redirectToRoute("trick_show", [
             'id' => $trick->getId(),
             'slug' => $trick->getSlugName()
-          ], 301);
+            ], 301);
         }
+
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
 
@@ -101,9 +90,8 @@ class TrickController extends AbstractController
             $comment->setTrick($trick);
             $comment->setUser($this->getUser());
 
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($comment);
-            $entityManager->flush();
+            $this->entityManager->persist($comment);
+            $this->entityManager->flush();
 
             $comment = new Comment();
             $form = $this->createForm(CommentType::class, $comment);
@@ -113,11 +101,11 @@ class TrickController extends AbstractController
         $trick_group = Trick::TRICK_GROUP[$trick->getTrickGroup()];
 
         return $this->render('trick/show.html.twig', [
-          'comment'=> $comment,
-          'form' => $form->createView(),
-          'trick' => $trick,
-          'niveau' => $niveau,
-          'trick_group' => $trick_group
+            'comment'=> $comment,
+            'form' => $form->createView(),
+            'trick' => $trick,
+            'niveau' => $niveau,
+            'trick_group' => $trick_group
         ]);
     }
 
@@ -133,7 +121,6 @@ class TrickController extends AbstractController
 
         $trick->setImgDocs($temporaryStorage->getTempImg());
         $trick->setVideoDocs($temporaryStorage->getTempVideo());
-
     
         $form = $this->createForm(TrickType::class, $trick);
 
@@ -144,22 +131,17 @@ class TrickController extends AbstractController
 
         $form->handleRequest($request);
 
-       
         if ($form->isSubmitted() && $form->isValid()) {
-            $trick =  $this->validateEdition($form, $trick, 'imgDocs', $storedImages);
-            $trick = $this->validateEdition($form, $trick, 'videoDocs', $storedVideos);
+            $trick->setImgDocs($this->validateEdition($form, $trick, 'imgDocs', $storedImages));
+            $trick->setVideoDocs($this->validateEdition($form, $trick, 'videoDocs', $storedVideos));
 
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($trick);
-            $entityManager->flush();
+            $this->entityManager->persist($trick);
+            $this->entityManager->flush();
 
             return $this->redirectToRoute('trick_index');
         }
 
-
         return $this->render('member/edit.html.twig', [
-
             'trick' => $trick,
             'form' => $form->createView(),
         ]);
@@ -172,9 +154,8 @@ class TrickController extends AbstractController
     public function delete(Request $request, Trick $trick): Response
     {
         if ($this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($trick);
-            $entityManager->flush();
+            $this->entityManager->remove($trick);
+            $this->entityManager->flush();
         }
 
         return $this->redirectToRoute('trick_index');
@@ -188,14 +169,13 @@ class TrickController extends AbstractController
     {
         if (!$request->request->has('first')) {
             return $this->render('trick/ajax.html.twig', [
-          'count' => $trickRepository->countTricks()
-        ]);
-        } else {
-            return $this->render('trick/ajax.html.twig', [
+                'count' => $trickRepository->countTricks()
+            ]);
+        }
 
+        return $this->render('trick/ajax.html.twig', [
             'tricks' => $trickRepository->loadXtricks($request->request->get('first'), 4),
         ]);
-        }
     }
 
 
@@ -207,35 +187,27 @@ class TrickController extends AbstractController
     {
         if (null !== $request->request->get('first')) {
             return $this->render('trick/comments.html.twig', [
-
-        'comments' => $commentRepo->findComments($trick->getId(), $request->request->get('first'))
-            
-        ]);
+                'comments' => $commentRepo->findComments($trick->getId(), $request->request->get('first'))
+            ]);
         }
  
         return $this->render('trick/comments.html.twig', [
-
-        'comments' => $commentRepo->findComments($trick->getId()),
-        'initial_load' => true
-            
+            'comments' => $commentRepo->findComments($trick->getId()),
+            'initial_load' => true
         ]);
     }
     /**
-     * Action : check if  old files are associated to a trick
-     *          before adding new files
+     * Action : check if  old files are associated to a trick before adding new files
      */
-    private function validateEdition($form, $trick, $identifier, $array)
+    private function validateEdition($form, $identifier, $array)
     {
         if ($form->get($identifier)->getData() == null && isset($array)) {
             $files2Save = $this->uploadedFile->docsInputManager($array);
-            ($identifier == 'imgDocs')? $trick->setImgDocs($files2Save): $trick->setVideoDocs($files2Save);
         } else {
             $docs = $form->get($identifier)->getData();
             $files2Save = $this->uploadedFile->docsInputManager($docs);
-
-            ($identifier == 'imgDocs')? $trick->setImgDocs($files2Save): $trick->setVideoDocs($files2Save);
         }
 
-        return $trick;
+        return $files2Save;
     }
 }

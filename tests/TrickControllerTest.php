@@ -111,10 +111,10 @@ class TrickControllerTest extends WebTestCase
             'PHP_AUTH_USER' => 'admin@admin.com',
             'PHP_AUTH_PW'   => 'Pass_1234',
         ]);
+
         $tricks = $this->entityManager
             ->getRepository(Trick::class)
             ->findAll();
-        ;
 
         $trick = $tricks[0];
 
@@ -125,13 +125,12 @@ class TrickControllerTest extends WebTestCase
         $form['trick[name]'] = 'Trick 77';
         $form['trick[description]'] = 'Pellentesque sit amet eros at metus iaculis gravida. In sodales felis vel dolor pulvinar porttitor ut fermentum arcu. Integer metus est, viverra eget augue eget, hendrerit tempor turpis. In tellus neque, vehicula at quam ut, eleifend cursus sapien. Suspendisse consectetur et tellus in scelerisque. Morbi id lectus congue erat rhoncus accumsan. Curabitur sit amet augue lacus. Aliquam at bibendum velit. Nunc tortor magna, blandit posuere elit eu, aliquet fringilla lacus. Nam at volutpat est.';
         $form['trick[niveau]'] = 2;
-        $form['trick[trick_group]'] = 2
-      ;
+        $form['trick[trick_group]'] = 2;
 
         $crawler = $client->submit($form);
 
         $this->assertTrue(
-          $client->getResponse()->isRedirect('/')
+            $client->getResponse()->isRedirect('/')
         );
     }
 
@@ -144,17 +143,17 @@ class TrickControllerTest extends WebTestCase
             'PHP_AUTH_USER' => 'admin@admin.com',
             'PHP_AUTH_PW'   => 'Pass_1234',
         ]);
+
         $tricks = $this->entityManager
             ->getRepository(Trick::class)
             ->findAll();
-        ;
 
         $trick = $tricks[0];
 
         $client->request('DELETE', '/member/'. $trick->getId() .'/delete');
 
         $this->assertTrue(
-          $client->getResponse()->isRedirect('/')
+            $client->getResponse()->isRedirect('/')
         );
     }
 
@@ -167,8 +166,8 @@ class TrickControllerTest extends WebTestCase
         $crawler = $client->xmlHttpRequest('POST', '/ajax/', ['first' => 4]);
       
         $this->assertGreaterThan(
-          0,
-          $crawler->filter('#trash-icon')->count()
+            0,
+            $crawler->filter('#trash-icon')->count()
         );
     }
 
@@ -185,7 +184,6 @@ class TrickControllerTest extends WebTestCase
         $tricks = $this->entityManager
             ->getRepository(Trick::class)
             ->findAll();
-        ;
       
         $trick = $tricks[0];
       
@@ -193,8 +191,8 @@ class TrickControllerTest extends WebTestCase
         $crawler = $client->xmlHttpRequest('POST', '/new_comments/'.$trick->getId());
       
         $this->assertGreaterThan(
-          0,
-          $crawler->filter('html:contains("à écrit le")')->count()
+            0,
+            $crawler->filter('html:contains("à écrit le")')->count()
         );
     }
 }

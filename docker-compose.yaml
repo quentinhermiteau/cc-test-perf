@@ -31,6 +31,9 @@ services:
         tty: true
         stdin_open: true
         working_dir: /usr/share/nginx/html
+        user: php
+        ports:
+            - 8000:8000
         volumes:
             - .:/usr/share/nginx/html
 

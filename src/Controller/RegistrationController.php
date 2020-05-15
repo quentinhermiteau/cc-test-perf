@@ -66,8 +66,6 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-
         //$email = $request->request->get('email');
             $user  = $entityManager->getRepository(User::class)->findOneByEmail($form->getData()['email']);
 
