@@ -43,7 +43,6 @@ services:
             BLACKFIRE_CLIENT_ID: 016d2126-1a82-4a96-ab87-ab4ee9f04e90
             BLACKFIRE_CLIENT_TOKEN: eca1753e84e933a11c5731c3d942d239c73c778b192c26d54cd28ba3b1e09d0a
 
-    # docker-compose up mariadb
     mariadb:
         restart: always
         container_name: mariadb
