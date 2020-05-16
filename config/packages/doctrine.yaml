@@ -19,7 +19,7 @@ doctrine:
         unix_socket: '%env(resolve:UNIX_SOCKET)%'
     orm:
         auto_generate_proxy_classes: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
             App:
@@ -28,3 +28,9 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+        # cache settings
+        # metadata_cache_driver: apcu
+        # result_cache_driver: apcu
+        # query_cache_driver: apcu
+        # second_level_cache:
+        #     enabled: true

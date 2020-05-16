@@ -14,7 +14,7 @@
             <img src="{{ asset('uploads/images/' ~ trick.imgDocs[0]) }}" class="card-img-top img-fluid" alt="...">
           {% endif%}
             <div class="card-body ajax-card">
-              <a class="card-title" href="{{path('trick_show', {'slug' : trick.slugname, 'id' : trick.id})}}">{{ trick.name }} </a>
+              <a class="card-title" href="{{path('trick_show', {'slugName' : trick.slugname})}}">{{ trick.name }} </a>
               <a href="{{path('trick_edit',{id: trick.id })}}">
               <i class="fas fa-pencil-alt"></i>
               </a>

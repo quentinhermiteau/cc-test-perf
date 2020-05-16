@@ -34,12 +34,9 @@ class TrickController extends AbstractController
      * Action : get home page
      * @Route("/", name="trick_index", methods={"GET"})
      */
-    public function index(TrickRepository $trickRepository): Response
+    public function index(): Response
     {
-        return $this->render('trick/index.html.twig', [
-            'tricks' => $trickRepository->findAll(),
-            'fixed_menu'=> 'enabled'
-        ]);
+        return $this->render('trick/index.html.twig')->setMaxAge(3600);
     }
 
     /**
@@ -58,6 +55,7 @@ class TrickController extends AbstractController
 
             $this->entityManager->persist($trick);
             $this->entityManager->flush();
+            $this->entityManager->clear();
 
             return $this->redirectToRoute('trick_index');
         }
@@ -70,17 +68,10 @@ class TrickController extends AbstractController
 
     /**
      * Action : display a trick details page
-     * @Route("/{slug}-{id}", name="trick_show", methods={"GET","POST"}, requirements= {"slug": "[a-z0-9\-]*"})
+     * @Route("/{slugName}", name="trick_show", methods={"GET","POST"})
      */
-    public function show(Trick $trick, Request $request, string $slug): Response
+    public function show(Trick $trick, Request $request): Response
     {
-        if ($trick->getSlugName() !== $slug) {
-            return $this->redirectToRoute("trick_show", [
-            'id' => $trick->getId(),
-            'slug' => $trick->getSlugName()
-            ], 301);
-        }
-
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
 
@@ -92,6 +83,7 @@ class TrickController extends AbstractController
 
             $this->entityManager->persist($comment);
             $this->entityManager->flush();
+            $this->entityManager->clear();
 
             $comment = new Comment();
             $form = $this->createForm(CommentType::class, $comment);
@@ -106,7 +98,7 @@ class TrickController extends AbstractController
             'trick' => $trick,
             'niveau' => $niveau,
             'trick_group' => $trick_group
-        ]);
+        ])->setMaxAge(3600);
     }
 
 
@@ -135,8 +127,8 @@ class TrickController extends AbstractController
             $trick->setImgDocs($this->validateEdition($form, $trick, 'imgDocs', $storedImages));
             $trick->setVideoDocs($this->validateEdition($form, $trick, 'videoDocs', $storedVideos));
 
-            $this->entityManager->persist($trick);
             $this->entityManager->flush();
+            $this->entityManager->clear();
 
             return $this->redirectToRoute('trick_index');
         }
@@ -156,6 +148,7 @@ class TrickController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($trick);
             $this->entityManager->flush();
+            $this->entityManager->clear();
         }
 
         return $this->redirectToRoute('trick_index');
